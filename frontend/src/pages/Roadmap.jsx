@@ -4,8 +4,9 @@ import { useLocation } from 'react-router-dom';
 function Roadmap() {
   const location = useLocation();
   const { projectDescription, duration } = location.state;
-  const [roadmap, setRoadmap] = useState(null);
+  const [roadmap, setRoadmap] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -26,6 +27,8 @@ function Roadmap() {
         setRoadmap(data.roadmap);
       } catch (error) {
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,21 +42,15 @@ function Roadmap() {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {roadmap ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : roadmap ? (
         <div className="bg-white p-6 rounded shadow-md w-full max-w-4xl">
           <h2 className="text-xl font-bold mb-2">Roadmap Content</h2>
-          <ul>
-            {roadmap.map((week, index) => (
-              <li key={index} className="mb-4">
-                <h3 className="text-lg font-semibold">Week {week.week}</h3>
-                <p>{week.topic}: <a href={week.link} className="text-blue-500 underline">{week.link}</a></p>
-                <p>Practice: <a href={week.practice} className="text-blue-500 underline">{week.practice}</a></p>
-              </li>
-            ))}
-          </ul>
+          <pre className="whitespace-pre-wrap">{roadmap}</pre>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>No roadmap generated.</p>
       )}
     </div>
   );

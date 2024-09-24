@@ -1,8 +1,10 @@
 import express from 'express';
-import { askQuestion } from '../controllers/chatbotController.js';
+import { askChatbot } from '../controllers/chatbotController.js';
 
 const router = express.Router();
-
-router.post('/', askQuestion);
+router.get('/', (req, res) => {
+    res.send('Chatbot API endpoint');
+  });
+router.post('/', askChatbot);
 
 export default router;
