@@ -1,6 +1,6 @@
-const { askGemini } = require('../services/geminiService');
+import { askGemini } from '../services/geminiService.js';
 
-exports.askQuestion = async (req, res) => {
+export const askQuestion = async (req, res) => {
   const { question } = req.body;
 
   try {
