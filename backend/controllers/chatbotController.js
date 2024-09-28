@@ -3,16 +3,24 @@ import Chat from '../models/Chat.js';
 
 export const askChatbot = async (req, res) => {
   const { message } = req.body;
-  const userId = req.user.id; // Assuming you have authentication middleware
+  const userId = req.user ? req.user.id : null; // Handle unauthenticated requests
 
   try {
-    const response = await askGemini(message);
+    const botResponse = await askGemini(message);
     
-    // Save chat to database
-    await Chat.create({ userId, userMessage: message, botResponse: response });
+    if (userId) {
+      // Save chat to database if user is authenticated
+      const chat = new Chat({
+        userId,
+        userMessage: message,
+        botResponse
+      });
+      await chat.save();
+    }
 
-    res.status(200).json({ response });
+    res.status(200).json({ response: botResponse });
   } catch (error) {
+    console.error('Error in chatbot request:', error);
     res.status(500).json({ error: 'Failed to get response from chatbot' });
   }
 };

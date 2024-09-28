@@ -4,7 +4,7 @@ import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/generate', auth, generateRoadmap);
 router.get('/history', auth, getRoadmapHistory);
+router.post('/generate', auth, generateRoadmap);
 
 export default router;

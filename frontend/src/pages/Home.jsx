@@ -20,6 +20,9 @@ const Home = () => {
         <Link to="/chatbot" className="bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition duration-300">
           Open Chatbot
         </Link>
+        <Link to="/checklist" className="bg-green-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-600 transition duration-300">
+          Checklist
+        </Link>
       </div>
     </div>
   );

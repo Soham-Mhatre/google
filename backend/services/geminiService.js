@@ -18,8 +18,22 @@ export const askGemini = async (prompt) => {
 };
 
 export const getRoadmapFromGeminiAPI = async (topic, weeks) => {
-  const prompt = `Generate a ${weeks}-week learning roadmap for the topic: "${topic}". Format the roadmap as a week-by-week plan, including learning objectives, resources, and practice exercises for each week.`;
-  
+  const prompt = `Generate a ${weeks}-week learning roadmap for the topic: "${topic}". For each week, include the following sections: Learning Objectives, Resources, and Practice Exercises. Format the roadmap as follows:
+
+**Week 1: [Topic]**
+Learning Objectives:
+- [Objective 1]
+- [Objective 2]
+Resources:
+- [Resource 1]
+- [Resource 2]
+Practice Exercises:
+- [Exercise 1]
+- [Exercise 2]
+
+**Week 2: [Topic]**
+...`;
+
   try {
     const response = await askGemini(prompt);
     return response;

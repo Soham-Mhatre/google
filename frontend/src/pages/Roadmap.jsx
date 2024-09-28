@@ -1,5 +1,3 @@
-// frontend/src/pages/Roadmap.jsx
-// frontend/src/pages/Roadmap.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import RoadmapBlock from '../components/RoadmapBlock';
@@ -16,13 +14,13 @@ const Roadmap = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/roadmap/generate', {
+      const response = await fetch('http://localhost:5000/api/roadmap/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the JWT token in localStorage
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ topic, weeks }),
+        body: JSON.stringify({ topic, weeks: parseInt(weeks) }),
       });
 
       if (!response.ok) {
@@ -30,59 +28,65 @@ const Roadmap = () => {
       }
 
       const data = await response.json();
+      console.log(data)
+      if (!Array.isArray(data.roadmap)) {
+        throw new Error('Invalid roadmap format received from server');
+      }
+
       setRoadmap(data.roadmap);
     } catch (error) {
+      console.error('Error generating roadmap:', error);
       setError(error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddToChecklist = async (blockContent) => {
+  const addToChecklist = async (content) => {
     try {
-      const response = await fetch('/api/checklist/add', {
+      const response = await fetch('http://localhost:5000/api/checklist/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the JWT token in localStorage
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ content: blockContent, type: 'roadmap' }),
+        body: JSON.stringify({ content, type: 'roadmap' }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to add to checklist');
       }
 
-      // Optionally show a success message or update the UI
-      console.log('Added to checklist!');
+      // Optionally, you can show a success message here
     } catch (error) {
       console.error('Error adding to checklist:', error);
     }
   };
 
-  
-
   return (
-    <div className="min-h-screen bg-gray-100 p-8 relative"> 
+    <div className="min-h-screen bg-gray-100 p-8 relative">
       <Link to="/" className="absolute top-4 left-4 text-blue-500 hover:underline">&larr; Back to Home</Link>
       <h1 className="text-3xl font-bold mb-8 text-center">Which Roadmap Should I Do For You?</h1>
 
       <div className="max-w-3xl mx-auto">
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {isLoading && <div className="text-center">Generating roadmap...</div>}
-        {roadmap && roadmap.length > 0 ? (
-          roadmap.map((block, index) => (
+        {roadmap && Array.isArray(roadmap) && roadmap.length > 0 ? (
+          roadmap.map((week, index) => (
             <RoadmapBlock
               key={index}
-              week={index + 1} 
-              topic={block.topic} 
-              learningMaterial={block.learningMaterial} 
-              practiceMaterial={block.practiceMaterial} 
-              onAddToChecklist={() => handleAddToChecklist(block.topic)} 
+              week={week.weekNumber}
+              topic={week.topic}
+              learningObjectives={week.learningObjectives}
+              resources={week.resources}
+              practiceExercises={week.practiceExercises}
+              onAddToChecklist={() => addToChecklist(week.topic)}
             />
           ))
         ) : (
-          <p className="text-center text-gray-600">Generate a roadmap to see the content here.</p>
+          <p className="text-center text-gray-600">
+            {roadmap ? 'No roadmap data available.' : 'Generate a roadmap to see the content here.'}
+          </p>
         )}
       </div>
 
@@ -101,7 +105,7 @@ const Roadmap = () => {
             onChange={(e) => setWeeks(e.target.value)}
             placeholder="Weeks"
             className="w-24 mr-2 p-2 border rounded"
-            min="1" 
+            min="1"
           />
           <button
             onClick={generateRoadmap}

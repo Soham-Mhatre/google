@@ -8,8 +8,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         &times;
       </button>
       <nav className="mt-8">
+        <Link to="/" className="block py-2 px-4 hover:bg-gray-700">Home</Link>
         <Link to="/chat-history" className="block py-2 px-4 hover:bg-gray-700">Chat History</Link>
         <Link to="/roadmap-history" className="block py-2 px-4 hover:bg-gray-700">Roadmap History</Link>
+        <Link to="/checklist" className="block py-2 px-4 hover:bg-gray-700">Checklist</Link>
       </nav>
     </div>
   );

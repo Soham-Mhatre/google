@@ -14,11 +14,11 @@ const ChatbotFloater = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chatbot/ask', {
+      const response = await fetch('http://localhost:5000/api/chatbot/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the JWT token in localStorage
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({ message: input }),
       });
