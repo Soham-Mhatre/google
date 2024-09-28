@@ -1,20 +1,29 @@
-// backend/controllers/chatbotController.js
 import { askGemini } from '../services/geminiService.js';
+import Chat from '../models/Chat.js';
 
 export const askChatbot = async (req, res) => {
-  const { prompt } = req.body;
-
-  if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required' });
-  }
+  const { message } = req.body;
+  const userId = req.user.id; // Assuming you have authentication middleware
 
   try {
-    console.log('Received prompt:', prompt);
-    const response = await askGemini(prompt);
-    console.log('Gemini API response:', response);
+    const response = await askGemini(message);
+    
+    // Save chat to database
+    await Chat.create({ userId, userMessage: message, botResponse: response });
+
     res.status(200).json({ response });
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
-    res.status(500).json({ error: 'Failed to get response from chatbot', details: error.message });
+    res.status(500).json({ error: 'Failed to get response from chatbot' });
+  }
+};
+
+export const getChatHistory = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const history = await Chat.find({ userId }).sort({ createdAt: -1 });
+    res.status(200).json({ history });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch chat history' });
   }
 };

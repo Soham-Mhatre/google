@@ -1,10 +1,10 @@
 import express from 'express';
-import { askChatbot } from '../controllers/chatbotController.js';
+import { askChatbot, getChatHistory } from '../controllers/chatbotController.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
-router.get('/', (req, res) => {
-    res.send('Chatbot API endpoint');
-  });
-router.post('/', askChatbot);
+
+router.post('/ask', auth, askChatbot);
+router.get('/history', auth, getChatHistory);
 
 export default router;

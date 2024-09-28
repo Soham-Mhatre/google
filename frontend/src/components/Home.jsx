@@ -1,17 +1,9 @@
-// frontend/src/pages/Home.jsx
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
 
 const Home = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative"> 
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      <div className="absolute top-4 left-4 text-blue-500 hover:underline">
-        <button onClick={() => setIsSidebarOpen(true)}>☰</button>
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <h1 className="text-4xl font-bold mb-8">Welcome to Learning Companion</h1>
       <div className="space-x-4">
         <Link to="/roadmap" className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600 transition duration-300">
