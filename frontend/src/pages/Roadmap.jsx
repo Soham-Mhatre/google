@@ -1,5 +1,3 @@
-// frontend/src/pages/Roadmap.jsx
-// frontend/src/pages/Roadmap.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import RoadmapBlock from '../components/RoadmapBlock';
@@ -7,7 +5,7 @@ import RoadmapBlock from '../components/RoadmapBlock';
 const Roadmap = () => {
   const [topic, setTopic] = useState('');
   const [weeks, setWeeks] = useState('');
-  const [roadmap, setRoadmap] = useState(null);
+  const [roadmap, setRoadmap] = useState([]); // Initialize as empty array
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -16,13 +14,13 @@ const Roadmap = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/roadmap/generate', {
+      const response = await fetch('http://localhost:5000/api/roadmap/generate', {  // Ensure this URL matches your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the JWT token in localStorage
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Ensure the user is logged in
         },
-        body: JSON.stringify({ topic, weeks }),
+        body: JSON.stringify({ topic, weeks }), // Sending topic and weeks as the request payload
       });
 
       if (!response.ok) {
@@ -30,7 +28,7 @@ const Roadmap = () => {
       }
 
       const data = await response.json();
-      setRoadmap(data.roadmap);
+      setRoadmap(data.roadmap || []); // Ensure roadmap is an array
     } catch (error) {
       setError(error.message);
     } finally {
@@ -40,11 +38,11 @@ const Roadmap = () => {
 
   const handleAddToChecklist = async (blockContent) => {
     try {
-      const response = await fetch('/api/checklist/add', {
+      const response = await fetch('http://localhost:5000/api/checklist/add', { // Ensure this URL matches your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you store the JWT token in localStorage
+          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token for auth
         },
         body: JSON.stringify({ content: blockContent, type: 'roadmap' }),
       });
@@ -53,14 +51,11 @@ const Roadmap = () => {
         throw new Error('Failed to add to checklist');
       }
 
-      // Optionally show a success message or update the UI
       console.log('Added to checklist!');
     } catch (error) {
       console.error('Error adding to checklist:', error);
     }
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 relative"> 
@@ -70,7 +65,7 @@ const Roadmap = () => {
       <div className="max-w-3xl mx-auto">
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {isLoading && <div className="text-center">Generating roadmap...</div>}
-        {roadmap && roadmap.length > 0 ? (
+        {roadmap && roadmap.length > 0 ? ( // Ensure roadmap is checked correctly
           roadmap.map((block, index) => (
             <RoadmapBlock
               key={index}
