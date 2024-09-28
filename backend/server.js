@@ -1,31 +1,24 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
-import roadmapRoutes from './routes/roadmapRoutes.js';
+import connectDB from './config/database.js';
 import chatbotRoutes from './routes/chatbotRoutes.js';
+import roadmapRoutes from './routes/roadmapRoutes.js';
+import checklistRoutes from './routes/checklistRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
+connectDB();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Welcome to the Gemini API server');
-});
-
-// Use routes
-app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/chatbot', chatbotRoutes);
-
-// Catch-all route for undefined paths
-app.use((req, res) => {
-  res.status(404).send('404 - Not Found');
-});
+app.use('/api/roadmap', roadmapRoutes);
+app.use('/api/checklist', checklistRoutes);
+app.use('/api/user', userRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

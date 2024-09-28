@@ -1,14 +1,10 @@
 import express from 'express';
-import { getRoadmap } from '../controllers/roadmapController.js';
+import { generateRoadmap, getRoadmapHistory } from '../controllers/roadmapController.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Handle GET requests
-router.get('/', (req, res) => {
-  res.send('Roadmap API endpoint');
-});
-
-// Handle POST requests
-router.post('/', getRoadmap);
+router.post('/generate', auth, generateRoadmap);
+router.get('/history', auth, getRoadmapHistory);
 
 export default router;
