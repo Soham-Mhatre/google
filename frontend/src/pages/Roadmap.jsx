@@ -14,7 +14,7 @@ const Roadmap = () => {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/roadmap/generate', {  // Ensure this URL matches your backend
+      const response = await fetch('/api/roadmap/generate', {  // Ensure this URL matches your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const Roadmap = () => {
 
   const handleAddToChecklist = async (blockContent) => {
     try {
-      const response = await fetch('http://localhost:5000/api/checklist/add', { // Ensure this URL matches your backend
+      const response = await fetch('/api/checklist/add', { // Ensure this URL matches your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
